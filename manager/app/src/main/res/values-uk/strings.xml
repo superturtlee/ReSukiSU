@@ -652,4 +652,35 @@ Enabled: Увімкнути підміну sus tcontext \'su\' на \'u:r:priv_a
     <string name="notification_permission_denied">Помилка завантаження: потрібен дозвіл на сповіщення</string>
     <string name="storage_permission_description">Потрібен дозвіл на зовнішнє сховище для запису файлів.</string>
     <string name="storage_permission_denied">Помилка завантаження: потрібен дозвіл на зовнішнє сховище</string>
+
+    <!-- KPM (restored) -->
+    <string name="close_notice">Закрити</string>
+    <string name="confirm_uninstall_content">Буде видалено наступний KPM: %s</string>
+    <string name="confirm_uninstall_title_with_filename">Видалити</string>
+    <string name="home_kpm_version">Версія KPM</string>
+    <string name="invalid_file_type">Неправильний тип файлу! Будь ласка, виберіть файл .kpm.</string>
+    <string name="kernel_module_notice">Наступні функції модулів ядра були розроблені KernelPatch та модифіковані для включення функцій модулів ядра SukiSU Ultra</string>
+    <string name="kernel_not_enabled">Ядро не налаштоване</string>
+    <string name="kernel_not_patched">Ядро не пропатчене</string>
+    <string name="kpm_args">Параметри</string>
+    <string name="kpm_author">Автор</string>
+    <string name="kpm_control">Виконати</string>
+    <string name="kpm_control_failed">Невдача</string>
+    <string name="kpm_control_success">Успішно</string>
+    <string name="kpm_empty">На даний момент немає встановлених модулів ядра</string>
+    <string name="kpm_install_failed">Не вдалося завантажити модуль kpm</string>
+    <string name="kpm_install_mode">Встановлення KPM</string>
+    <string name="kpm_install_mode_description">Будь ласка, оберіть: %1$s режим встановлення модуля \n\nЗавантажити: Тимчасово завантажити модуль \nВбудувати: Постійно встановити в систему</string>
+    <string name="kpm_install_mode_embed">Вбудувати</string>
+    <string name="kpm_install_mode_load">Завантажити</string>
+    <string name="kpm_install_success">Завантаження модуля kpm успішне</string>
+    <string name="kpm_not_supported">Не підтримується (%s)</string>
+    <string name="kpm_supported">Підтримується (%s)</string>
+    <string name="kpm_uninstall">Видалити</string>
+    <string name="kpm_uninstall_failed">Не вдалося видалити</string>
+    <string name="kpm_uninstall_success">Видалено успішно</string>
+    <string name="kpm_version">Версія</string>
+    <string name="snackbar_failed_to_check_module_file">Не вдалося перевірити існування файлу модуля</string>
+    <string name="show_kpm_info">Приховати функцію KPM</string>
+    <string name="show_kpm_info_summary">Приховує інформацію та функцію KPM на головному екрані та в нижній панелі</string>
 </resources>

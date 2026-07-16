@@ -380,4 +380,37 @@ Lanjutkan?</string>
     <string name="hide_bl_script_description">Timpa properti status bootloader dalam layanan late_start</string>
     <string name="cleanup_residue">Bersihkan Sisa-sisa</string>
     <string name="cleanup_residue_description">Bersihkan file dan direktori sisa dari berbagai modul dan alat (dapat menyebabkan penghapusan yang tidak disengaja, kehilangan data, dan gagal boot, gunakan dengan hati-hati)</string>
+
+    <!-- KPM (restored) -->
+    <string name="close_notice">Tutup</string>
+    <string name="confirm_uninstall_content">Akan mencopot KPM berikut: %s</string>
+    <string name="confirm_uninstall_title_with_filename">Copot Pemasangan</string>
+    <string name="home_kpm_version">Versi KPM</string>
+    <string name="invalid_file_type">Jenis file tidak valid! Harap pilih file .kpm.</string>
+    <string name="kernel_module_notice">Fitur modul kernel berikut dikembangkan oleh KernelPatch dan dimodifikasi untuk menyertakan fitur modul kernel SukiSU Ultra</string>
+    <string name="kernel_not_enabled">Kernel Belum Diaktifkan</string>
+    <string name="kernel_not_patched">Kernel Belum Di-patch</string>
+    <string name="kpm_args">Parameter</string>
+    <string name="kpm_author">Penulis</string>
+    <string name="kpm_control">Jalankan</string>
+    <string name="kpm_control_failed">Gagal</string>
+    <string name="kpm_control_success">Berhasil</string>
+    <string name="kpm_empty">Saat ini tidak ada modul kernel yang terpasang</string>
+    <string name="kpm_install_failed">Gagal memuat modul kpm</string>
+    <string name="kpm_install_mode">Pemasangan KPM</string>
+    <string name="kpm_install_mode_description">Silakan pilih: %1$s mode pemasangan modul
+Muat: Secara sementara memuat modul
+Tanamkan: Secara permanen memasang ke sistem</string>
+    <string name="kpm_install_mode_embed">Tanamkan</string>
+    <string name="kpm_install_mode_load">Muat</string>
+    <string name="kpm_install_success">Berhasil memuat modul kpm</string>
+    <string name="kpm_not_supported">Tidak Didukung (%s)</string>
+    <string name="kpm_supported">Didukung (%s)</string>
+    <string name="kpm_uninstall">Copot Pemasangan</string>
+    <string name="kpm_uninstall_failed">Gagal mencopot</string>
+    <string name="kpm_uninstall_success">Berhasil dicopot</string>
+    <string name="kpm_version">Versi</string>
+    <string name="snackbar_failed_to_check_module_file">Gagal memeriksa keberadaan file modul</string>
+    <string name="show_kpm_info">Sembunyikan Fungsi KPM</string>
+    <string name="show_kpm_info_summary">Menyembunyikan informasi dan fungsi KPM di layar utama dan panel bawah</string>
 </resources>

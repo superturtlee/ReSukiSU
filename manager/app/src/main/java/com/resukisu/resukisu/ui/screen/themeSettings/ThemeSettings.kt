@@ -676,6 +676,17 @@ private fun SegmentedColumnScope.hideOptionsSettings(
     }
 
     item {
+        // 隐藏 KPM 功能与信息
+        SettingsSwitchWidget(
+            icon = Icons.TwoTone.VisibilityOff,
+            title = stringResource(R.string.show_kpm_info),
+            description = stringResource(R.string.show_kpm_info_summary),
+            checked = homeUiState.showKpmInfo,
+            onCheckedChange = homeViewModel::handleShowKpmInfoChange
+        )
+    }
+
+    item {
         // SuSFS 状态信息
         SettingsSwitchWidget(
             icon = Icons.TwoTone.VisibilityOff,

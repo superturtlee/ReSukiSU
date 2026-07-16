@@ -201,4 +201,33 @@
     <string name="installing_module">Modul wird installiert %1$d/%2$d</string>
     <string name="module_failed_count">%d Fehler bei der Installation eines neuen Moduls</string>
     <string name="kernel_flashing">Kernel-Flashen</string>
+
+    <!-- KPM (restored) -->
+    <string name="close_notice">Schließen</string>
+    <string name="confirm_uninstall_content">Folgende KPM wird deinstalliert: %s</string>
+    <string name="confirm_uninstall_title_with_filename">Deinstallieren</string>
+    <string name="home_kpm_version">KPM-Version</string>
+    <string name="invalid_file_type">Falscher Dateityp! Bitte wählen Sie eine .kpm Datei.</string>
+    <string name="kernel_module_notice">Die folgenden Kernel-Modulfunktionen wurden von KernelPatch entwickelt und so modifiziert, dass die Funktionen des Kernel-Moduls von SukiSU Ultra enthalten sind</string>
+    <string name="kernel_not_enabled">Kernel nicht konfiguriert</string>
+    <string name="kernel_not_patched">Kernel nicht gepatcht</string>
+    <string name="kpm_args">Parameter</string>
+    <string name="kpm_author">Autor</string>
+    <string name="kpm_control">Ausführen</string>
+    <string name="kpm_control_failed">Fehlgeschlagen</string>
+    <string name="kpm_control_success">Erfolgreich</string>
+    <string name="kpm_empty">Keine installierten Kernelmodule</string>
+    <string name="kpm_install_failed">Laden des kpm-Moduls fehlgeschlagen</string>
+    <string name="kpm_install_mode_description">Bitte wählen: %1\$s Modul-Installationsmodus \n\nLaden: Das Modul \ntemporär laden: Dauerhaft in das System installieren</string>
+    <string name="kpm_install_mode_embed">Einbetten</string>
+    <string name="kpm_install_mode_load">Laden</string>
+    <string name="kpm_install_success">Laden des kpm Moduls erfolgreich</string>
+    <string name="kpm_not_supported">Nicht unterstützt (%s)</string>
+    <string name="kpm_supported">Unterstützt: (%s)</string>
+    <string name="kpm_uninstall">Deinstallieren</string>
+    <string name="kpm_uninstall_failed">Deinstallation fehlgeschlagen</string>
+    <string name="kpm_uninstall_success">Erfolgreich deinstalliert</string>
+    <string name="snackbar_failed_to_check_module_file">Kann nicht überprüfen, ob die Moduldatei existiert</string>
+    <string name="show_kpm_info">KPM-Funktion anzeigen</string>
+    <string name="show_kpm_info_summary">Versteckt KPM-Informationen und Funktion in der Home- und Unterleiste</string>
 </resources>

@@ -206,4 +206,34 @@
     <string name="check_log">Por favor, compruebe el registro</string>
     <string name="installing_module">Módulo instalado %1$d/%2$d</string>
     <string name="module_failed_count">%d falló al instalar un nuevo módulo</string>
+
+    <!-- KPM (restored) -->
+    <string name="close_notice">Cancelar</string>
+    <string name="confirm_uninstall_content">El siguiente KPM será desinstalado: %s</string>
+    <string name="confirm_uninstall_title_with_filename">Desinstalar</string>
+    <string name="home_kpm_version">Versión de KPM</string>
+    <string name="invalid_file_type">¡Tipo de archivo incorrecto! Por favor seleccione el archivo .kpm.</string>
+    <string name="kernel_module_notice">Las siguientes funciones del módulo del núcleo fueron desarrolladas por KernelPatch y modificadas para incluir las funciones del módulo del núcleo de SukiSU Ultra</string>
+    <string name="kernel_not_enabled">Kernel no configurado</string>
+    <string name="kernel_not_patched">Kernel no parcheado</string>
+    <string name="kpm_args">Parámetros</string>
+    <string name="kpm_author">Autor</string>
+    <string name="kpm_control">Empezar</string>
+    <string name="kpm_control_failed">Fallido</string>
+    <string name="kpm_control_success">Correctamente realizado</string>
+    <string name="kpm_empty">No hay módulos del núcleo instalados en este momento</string>
+    <string name="kpm_install_failed">Error al cargar el módulo kpm</string>
+    <string name="kpm_install_mode_description">Por favor seleccione: %1\$s Modo de instalación del Módulo \n\nCarga: Cargar temporalmente el módulo \nInsertar: Instalar permanentemente en el sistema</string>
+    <string name="kpm_install_mode_embed">Insertar</string>
+    <string name="kpm_install_mode_load">Cargar</string>
+    <string name="kpm_install_success">Carga exitosa del módulo kpm</string>
+    <string name="kpm_not_supported">Sin soporte (%s)</string>
+    <string name="kpm_supported">Apoyado (%s)</string>
+    <string name="kpm_uninstall">Desinstalar</string>
+    <string name="kpm_uninstall_failed">Error al desinstalar</string>
+    <string name="kpm_uninstall_success">Desinstalado con éxito</string>
+    <string name="kpm_version">Versión</string>
+    <string name="snackbar_failed_to_check_module_file">No se puede comprobar si el archivo de módulo existe</string>
+    <string name="show_kpm_info">Mostrar función KPM</string>
+    <string name="show_kpm_info_summary">Oculta la información y función del KPM en la barra de inicio e inferior</string>
 </resources>

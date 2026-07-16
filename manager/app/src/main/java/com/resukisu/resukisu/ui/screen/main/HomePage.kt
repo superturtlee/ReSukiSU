@@ -350,6 +350,7 @@ fun HomePage(
                         isHideSusfsStatus = uiState.isHideSusfsStatus,
                         isHideZygiskImplement = uiState.isHideZygiskImplement,
                         isHideMetaModuleImplement = uiState.isHideMetaModuleImplement,
+                        showKpmInfo = uiState.showKpmInfo,
                     )
                 }
 
@@ -698,7 +699,8 @@ private fun InfoCard(
     isSimpleMode: Boolean,
     isHideSusfsStatus: Boolean,
     isHideZygiskImplement: Boolean,
-    isHideMetaModuleImplement: Boolean
+    isHideMetaModuleImplement: Boolean,
+    showKpmInfo: Boolean
 ) {
     val managersList = systemInfo.managersList
 
@@ -831,6 +833,32 @@ private fun InfoCard(
                 iconPlaceholder = false,
                 title = stringResource(R.string.home_hook_type),
                 description = Natives.getHookType(),
+            )
+        }
+
+        item(
+            visible = systemStatus.lkmMode == false && !isSimpleMode && !showKpmInfo
+        ) {
+            val kpmNotSupport =
+                systemInfo.kpmVersion.isEmpty() || systemInfo.kpmVersion.startsWith("Error")
+            val displayText = when {
+                kpmNotSupport && Natives.isKPMEnabled() -> stringResource(
+                    R.string.kpm_not_supported,
+                    stringResource(R.string.kernel_not_patched)
+                )
+
+                kpmNotSupport && !Natives.isKPMEnabled() -> stringResource(
+                    R.string.kpm_not_supported,
+                    stringResource(R.string.kernel_not_enabled)
+                )
+
+                else -> stringResource(R.string.kpm_supported, systemInfo.kpmVersion)
+            }
+
+            SettingsBaseWidget(
+                iconPlaceholder = false,
+                title = stringResource(R.string.home_kpm_version),
+                description = displayText,
             )
         }
 

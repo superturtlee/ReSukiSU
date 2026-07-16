@@ -16,6 +16,8 @@ import com.resukisu.resukisu.data.update.ManagerUpdateRepository
 import com.resukisu.resukisu.getKernelVersion
 import com.resukisu.resukisu.ksuApp
 import com.resukisu.resukisu.ui.susfs.util.SuSFSManager
+import com.resukisu.resukisu.ui.util.getKpmModuleCount
+import com.resukisu.resukisu.ui.util.getKpmVersion
 import com.resukisu.resukisu.ui.util.getMetaModuleImplement
 import com.resukisu.resukisu.ui.util.getModuleCount
 import com.resukisu.resukisu.ui.util.getSELinuxStatus
@@ -50,6 +52,7 @@ data class HomeUiState(
     val isHideZygiskImplement: Boolean = false,
     val isHideMetaModuleImplement: Boolean = false,
     val isHideLinkCard: Boolean = false,
+    val showKpmInfo: Boolean = false,
     val isInitialDataLoaded: Boolean = false,
     val isCoreDataLoaded: Boolean = false,
     val isExtendedDataLoaded: Boolean = false,
@@ -76,6 +79,7 @@ class HomeViewModel : ViewModel() {
         val lkmMode: Boolean? = null,
         val kernelVersion: KernelVersion = getKernelVersion(),
         val isRootAvailable: Boolean = false,
+        val isKpmConfigured: Boolean = false,
         val requireNewKernel: Boolean = false,
         val uapiMismatch: Boolean = false,
         val isSELinuxPermissive: Boolean = false,
@@ -89,12 +93,14 @@ class HomeViewModel : ViewModel() {
         val deviceModel: String = "",
         val managerVersion: Triple<String, Int, Int> = Triple("", 0, 0),
         val selinuxStatus: String = "",
+        val kpmVersion: String = "",
         val susfsEnabled: Boolean = false,
         val susfsVersionSupported: Boolean = false,
         val susfsVersion: String = "",
         val susfsFeatures: String = "",
         val superuserCount: Int = 0,
         val moduleCount: Int = 0,
+        val kpmModuleCount: Int = 0,
         val managersList: Natives.ManagersList? = null,
         val isDynamicSignEnabled: Boolean = false,
         val zygiskImplement: String = "",
@@ -198,6 +204,7 @@ class HomeViewModel : ViewModel() {
                     lkmMode = lkmMode,
                     kernelVersion = kernelVersion,
                     isRootAvailable = runCatching { rootAvailable() }.getOrDefault(false),
+                    isKpmConfigured = runCatching { Natives.isKPMEnabled() }.getOrDefault(false),
                     requireNewKernel = runCatching {
                         isManager && Natives.requireNewKernel()
                     }.getOrDefault(false),
@@ -246,10 +253,12 @@ class HomeViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         systemInfo = it.systemInfo.copy(
-                            superuserCount = moduleInfo.first,
-                            moduleCount = moduleInfo.second,
-                            zygiskImplement = moduleInfo.third,
-                            metaModuleImplement = moduleInfo.fourth,
+                            kpmVersion = moduleInfo.first,
+                            superuserCount = moduleInfo.second,
+                            moduleCount = moduleInfo.third,
+                            kpmModuleCount = moduleInfo.fourth,
+                            zygiskImplement = moduleInfo.fifth,
+                            metaModuleImplement = moduleInfo.sixth,
                         )
                     )
                 }
@@ -353,6 +362,16 @@ class HomeViewModel : ViewModel() {
             it.copy(isHideOtherInfo = newValue)
         }
     }
+
+    fun handleShowKpmInfoChange(newValue: Boolean) {
+        handleShowKpmInfoChange(ksuApp, newValue)
+    }
+
+    fun handleShowKpmInfoChange(context: Context, newValue: Boolean) {
+        updateBooleanPref(context, "show_kpm_info", newValue) {
+            it.copy(showKpmInfo = newValue)
+        }
+    }
     fun refreshData(
         context: Context,
         refreshUI: Boolean = false
@@ -411,6 +430,7 @@ class HomeViewModel : ViewModel() {
                     "is_hide_meta_module_Implement",
                     false
                 ),
+                showKpmInfo = settingsPrefs.getBoolean("show_kpm_info", false),
             )
         }
     }
@@ -429,11 +449,13 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private suspend fun loadModuleInfo(): Tuple4<Int, Int, String, String> {
+    private suspend fun loadModuleInfo(): Tuple6<String, Int, Int, Int, String, String> {
         return withContext(Dispatchers.IO) {
-            Tuple4(
+            Tuple6(
+                runCatching { getKpmVersion() }.getOrDefault("Unknown"),
                 runCatching { getSuperuserCount() }.getOrDefault(0),
                 runCatching { getModuleCount() }.getOrDefault(0),
+                runCatching { getKpmModuleCount() }.getOrDefault(0),
                 runCatching { getZygiskImplement() }.getOrDefault("None"),
                 runCatching { getMetaModuleImplement() }.getOrDefault("None"),
             )
@@ -531,11 +553,12 @@ class HomeViewModel : ViewModel() {
         val sixth: T6
     )
 
-    data class Tuple4<T1, T2, T3, T4>(
+    data class Tuple5<T1, T2, T3, T4, T5>(
         val first: T1,
         val second: T2,
         val third: T3,
-        val fourth: T4
+        val fourth: T4,
+        val fifth: T5
     )
 
     override fun onCleared() {

@@ -239,4 +239,34 @@
     <string name="installing_module">تم تثبيت الوحدة %1$d/%2$d</string>
     <string name="module_failed_count">أخفق %d في تثبيت وحدة جديدة</string>
     <string name="kernel_flashing">ضرب النواة</string>
+
+    <!-- KPM (restored) -->
+    <string name="close_notice">إغلاق</string>
+    <string name="confirm_uninstall_content">سيتم إلغاء تثبيت KPM التالية: %s</string>
+    <string name="confirm_uninstall_title_with_filename">إلغاء التثبيت</string>
+    <string name="home_kpm_version">إصدار KPM</string>
+    <string name="invalid_file_type">نوع الملف غير صحيح! الرجاء تحديد ملف .kpm.</string>
+    <string name="kernel_module_notice">تم تطوير وظائف نواة الوحدة النمطية التالية بواسطة KernelPatch وتعديلها لتشمل وظائف نواة الوحدة النمطية لـ SukiSU Ultra</string>
+    <string name="kernel_not_enabled">لم يتم تكوين النواة</string>
+    <string name="kernel_not_patched">النواة غير مصحوبة</string>
+    <string name="kpm_args">العوامل المتغيرة</string>
+    <string name="kpm_author">المؤلف</string>
+    <string name="kpm_control">تنفيذ</string>
+    <string name="kpm_control_failed">فشل</string>
+    <string name="kpm_control_success">نجحت</string>
+    <string name="kpm_empty">لا توجد وحدات نواة مثبتة في هذا الوقت</string>
+    <string name="kpm_install_failed">فشل تحميل وحدة كيلو بايم</string>
+    <string name="kpm_install_mode_description">الرجاء التحديد: %1\$s وضع تثبيت الوحدة \n\nالتحميل: قم بتحميل الوحدة \nمؤقتا: تثبيت دائم في النظام</string>
+    <string name="kpm_install_mode_embed">فسيفساء</string>
+    <string name="kpm_install_mode_load">التحميل</string>
+    <string name="kpm_install_success">تم تحميل وحدة كيلو جزء بنجاح</string>
+    <string name="kpm_not_supported">غير مدعوم (%s)</string>
+    <string name="kpm_supported">إدعمنا (%s)</string>
+    <string name="kpm_uninstall">إلغاء التثبيت</string>
+    <string name="kpm_uninstall_failed">فشل في إلغاء التثبيت</string>
+    <string name="kpm_uninstall_success">تم إلغاء التثبيت بنجاح</string>
+    <string name="kpm_version">الإصدار</string>
+    <string name="snackbar_failed_to_check_module_file">غير قادر على التحقق من وجود ملف الوحدة</string>
+    <string name="show_kpm_info">عرض وظيفة KPM</string>
+    <string name="show_kpm_info_summary">إخفاء معلومات KPM ووظيفتها في الشريط المنزلي والأسفل</string>
 </resources>
