@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import com.resukisu.resukisu.R
+import com.resukisu.resukisu.data.appPreferences
+import com.resukisu.resukisu.ksuApp
 import com.resukisu.resukisu.ui.component.ksuIsValid
 import com.resukisu.resukisu.ui.screen.main.HomePage
 import com.resukisu.resukisu.ui.screen.main.KpmPage
@@ -71,9 +73,12 @@ enum class BottomBarDestination(
                     getKpmVersion()
                 }.getOrNull()
 
+                // 隐藏 KPM 功能开关（show_kpm_info 实为“隐藏 KPM 功能”）
+                val hideKpm = ksuApp.appPreferences.getBoolean("show_kpm_info", false)
+
                 BottomBarDestination.entries.filter {
                     when (it) {
-                        Kpm -> kpmVersion?.isNotEmpty() ?: false
+                        Kpm -> !hideKpm && (kpmVersion?.isNotEmpty() ?: false)
                         else -> true
                     }
                 }
