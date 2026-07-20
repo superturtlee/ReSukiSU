@@ -2,9 +2,8 @@ package com.resukisu.resukisu.ui.screen
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.outlined.Archive
 import androidx.compose.material.icons.twotone.AdminPanelSettings
+import androidx.compose.material.icons.twotone.Archive
 import androidx.compose.material.icons.twotone.Extension
 import androidx.compose.material.icons.twotone.Home
 import androidx.compose.material.icons.twotone.Settings
@@ -39,8 +38,8 @@ enum class BottomBarDestination(
     Kpm(
         { bottomPadding -> KpmPage(bottomPadding) },
         R.string.kpm_title,
-        Icons.Filled.Archive,
-        Icons.Outlined.Archive,
+        Icons.TwoTone.Archive,
+        Icons.TwoTone.Archive,
         true
     ),
     SuperUser(
