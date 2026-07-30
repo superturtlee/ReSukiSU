@@ -35,6 +35,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 data class HomeUiState(
@@ -111,6 +113,7 @@ class HomeViewModel : ViewModel() {
     private val loadingJobs = mutableListOf<Job>()
     private var dataLoadJob: Job? = null
     private var managerUpdateCheckJob: Job? = null
+    private val statusInfoMutex = Mutex()
 
     private fun completedJob(): Job = Job().apply { complete() }
 
@@ -246,19 +249,7 @@ class HomeViewModel : ViewModel() {
                     )
                 }
 
-                val moduleInfo = loadModuleInfo()
-                _uiState.update {
-                    it.copy(
-                        systemInfo = it.systemInfo.copy(
-                            kpmVersion = moduleInfo.first,
-                            superuserCount = moduleInfo.second,
-                            moduleCount = moduleInfo.third,
-                            kpmModuleCount = moduleInfo.fourth,
-                            zygiskImplement = moduleInfo.fifth,
-                            metaModuleImplement = moduleInfo.sixth,
-                        )
-                    )
-                }
+                updateModuleAndSuperuserInfo()
 
                 if (!_uiState.value.isHideSusfsStatus) {
                     val susfsInfo = loadSuSFSInfo()
@@ -445,16 +436,74 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private suspend fun loadModuleInfo(): Tuple6<String, Int, Int, Int, String, String> {
+    private suspend fun loadSuperuserCount(): Int {
         return withContext(Dispatchers.IO) {
-            Tuple6(
+            runCatching { getSuperuserCount() }.getOrDefault(0)
+        }
+    }
+
+    private suspend fun loadModuleInfo(): Tuple5<String, Int, Int, String, String> {
+        return withContext(Dispatchers.IO) {
+            Tuple5(
                 runCatching { getKpmVersion() }.getOrDefault("Unknown"),
-                runCatching { getSuperuserCount() }.getOrDefault(0),
                 runCatching { getModuleCount() }.getOrDefault(0),
                 runCatching { getKpmModuleCount() }.getOrDefault(0),
                 runCatching { getZygiskImplement() }.getOrDefault("None"),
                 runCatching { getMetaModuleImplement() }.getOrDefault("None"),
             )
+        }
+    }
+
+    private suspend fun updateModuleAndSuperuserInfo() {
+        statusInfoMutex.withLock {
+            val superuserCount = loadSuperuserCount()
+            val moduleInfo = loadModuleInfo()
+            _uiState.update {
+                it.copy(
+                    systemInfo = it.systemInfo.copy(
+                        kpmVersion = moduleInfo.first,
+                        superuserCount = superuserCount,
+                        moduleCount = moduleInfo.second,
+                        kpmModuleCount = moduleInfo.third,
+                        zygiskImplement = moduleInfo.fourth,
+                        metaModuleImplement = moduleInfo.fifth,
+                    )
+                )
+            }
+        }
+    }
+
+    fun refreshModuleInfo(): Job {
+        return viewModelScope.launch(Dispatchers.IO) {
+            statusInfoMutex.withLock {
+                val moduleInfo = loadModuleInfo()
+                _uiState.update {
+                    it.copy(
+                        systemInfo = it.systemInfo.copy(
+                            kpmVersion = moduleInfo.first,
+                            moduleCount = moduleInfo.second,
+                            kpmModuleCount = moduleInfo.third,
+                            zygiskImplement = moduleInfo.fourth,
+                            metaModuleImplement = moduleInfo.fifth,
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun refreshSuperuserInfo(): Job {
+        return viewModelScope.launch(Dispatchers.IO) {
+            statusInfoMutex.withLock {
+                val superuserCount = loadSuperuserCount()
+                _uiState.update {
+                    it.copy(
+                        systemInfo = it.systemInfo.copy(
+                            superuserCount = superuserCount,
+                        )
+                    )
+                }
+            }
         }
     }
 

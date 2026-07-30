@@ -1780,6 +1780,7 @@ static void avd_init(struct av_decision *avd)
     avd->flags = 0;
 }
 
+#ifndef KSU_COMPAT_HAS_CURRENT_SID
 /*
  * get the subjective security ID of the current task
  */
@@ -1789,6 +1790,7 @@ static inline u32 current_sid(void)
 
     return tsec->sid;
 }
+#endif
 
 /*
  * Compute access vectors and extended permissions based on a context
