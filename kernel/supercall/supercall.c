@@ -9,6 +9,7 @@
 #include <linux/syscalls.h>
 #include <linux/uaccess.h>
 #include <linux/version.h>
+#include <linux/thread_info.h>
 
 #ifdef CONFIG_KSU_SUSFS
 #include <linux/namei.h>
@@ -18,6 +19,7 @@
 #include "compat/kernel_compat.h"
 #include "uapi/supercall.h"
 #include "supercall/internal.h"
+#include "policy/app_profile.h"
 #include "arch.h"
 #include "klog.h" // IWYU pragma: keep
 
@@ -96,6 +98,13 @@ int ksu_handle_sys_reboot(int magic1, int magic2, unsigned int cmd, void __user 
 #ifdef CONFIG_KSU_DEBUG
     pr_info("sys_reboot: intercepted call! magic: 0x%x id: %d\n", magic1, magic2);
 #endif
+
+    // KSU capability disabled for this process (and children): serve neither
+    // the fd install nor any reboot extension (toolkit/susfs). A real reboot()
+    // rejects this KSU magic1 with -EINVAL, so mimic that to keep KSU
+    // undetectable.
+    if (test_thread_flag(TIF_KSU_DISABLE_KSU))
+        return -EINVAL;
 
     // Check if this is a request to install KSU fd
     if (magic2 == KSU_INSTALL_MAGIC2) {

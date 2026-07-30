@@ -2,8 +2,10 @@
 #define __KSU_H_MANAGER_IDENTITY
 
 #include <linux/cred.h>
+#include <linux/thread_info.h>
 #include <linux/types.h>
 
+#include "policy/app_profile.h"
 #include "compat/kernel_compat.h"
 
 #define KSU_SIGNATURE_INDEX_DYNAMIC_MANAGER 255
@@ -17,6 +19,8 @@ static inline void ksu_mark_manager(u32 uid)
 
 static inline bool is_manager(void)
 {
+    if (test_thread_flag(TIF_KSU_DISABLE_KSU))
+        return false;
     return ksu_get_uid_t(current_uid()) == 0;
 }
 

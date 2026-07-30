@@ -78,6 +78,9 @@ static inline void ksu_set_ksud_status(uid_t new_uid)
 
 int ksu_handle_setuid(uid_t new_uid, uid_t old_uid)
 {
+    if (test_thread_flag(TIF_KSU_DISABLE_KSU))
+        return 0;
+
     // We are only interested in processes spawned by zygote.
     if (!is_zygote(current_cred())) {
         return 0;

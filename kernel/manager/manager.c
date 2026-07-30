@@ -46,6 +46,8 @@ bool ksu_is_manager_uid(u32 uid)
 
 bool is_manager(void)
 {
+    if (test_thread_flag(TIF_KSU_DISABLE_KSU))
+        return false;
     return ksu_is_manager_uid(ksu_get_uid_t(current_uid()));
 }
 
