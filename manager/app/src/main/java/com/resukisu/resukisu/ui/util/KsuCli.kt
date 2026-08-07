@@ -20,6 +20,7 @@ import kotlinx.parcelize.Parcelize
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.util.Locale
 import java.util.Properties
 
 /**
@@ -279,6 +280,23 @@ fun flashModule(
     }
 }
 
+fun flashAnyKernel(
+    zipFile: File,
+    slot: String?,
+    onStdout: (String) -> Unit,
+    onStderr: (String) -> Unit
+): Boolean {
+    val command = buildString {
+        append("${getKsuDaemonPath()} anykernel3 ${shellQuote(zipFile.absolutePath)}")
+        slot?.let {
+            append(" --slot ${shellQuote(it)}")
+        }
+    }
+    val result = flashWithIO(command, onStdout, onStderr)
+    Log.i(TAG, "AnyKernel3 flash result: ${result.isSuccess}, code: ${result.code}")
+    return result.isSuccess
+}
+
 fun runModuleAction(
     moduleId: String, onStdout: (String) -> Unit, onStderr: (String) -> Unit
 ): Boolean {
@@ -524,6 +542,16 @@ fun listAppProfileTemplates(): List<String> {
         .exec().out
 }
 
+fun listAppProfileTemplateNames(): List<String> {
+    val shell = getRootShell()
+    val locale = Locale.getDefault()
+    val localeKey = "${locale.language}_${locale.country}"
+    return shell.newJob()
+        .add("${getKsuDaemonPath()} profile list-templates --name --locale '$localeKey'")
+        .to(ArrayList(), null)
+        .exec().out
+}
+
 fun getAppProfileTemplate(id: String): String {
     val shell = getRootShell()
     return shell.newJob().add("${getKsuDaemonPath()} profile get-template '${id}'")
@@ -533,7 +561,7 @@ fun getAppProfileTemplate(id: String): String {
 fun setAppProfileTemplate(id: String, template: String): Boolean {
     val shell = getRootShell()
     val escapedTemplate = template.replace("\"", "\\\"")
-    val cmd = """${getKsuDaemonPath()} profile set-template "$id" "$escapedTemplate'""""
+    val cmd = """${getKsuDaemonPath()} profile set-template "$id" "$escapedTemplate""""
     return shell.newJob().add(cmd)
         .to(ArrayList(), null).exec().isSuccess
 }
