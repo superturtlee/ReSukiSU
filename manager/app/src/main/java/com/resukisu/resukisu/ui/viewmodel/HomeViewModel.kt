@@ -16,6 +16,7 @@ import com.resukisu.resukisu.data.update.ManagerUpdateRepository
 import com.resukisu.resukisu.getKernelVersion
 import com.resukisu.resukisu.ksuApp
 import com.resukisu.resukisu.data.susfs.SuSFSConfigHelper
+import com.resukisu.resukisu.ui.activity.util.isNetworkAvailable
 import com.resukisu.resukisu.ui.util.getKpmModuleCount
 import com.resukisu.resukisu.ui.util.getKpmVersion
 import com.resukisu.resukisu.ui.util.getMetaModuleImplement
@@ -128,6 +129,14 @@ class HomeViewModel : ViewModel() {
                     betaManagerUpdate = null,
                     isBetaManagerUpdateCheckFailed = false,
                 )
+            }
+            return
+        }
+        if (!isNetworkAvailable(context)) {
+            managerUpdateCheckJob?.cancel()
+            managerUpdateCheckJob = null
+            _uiState.update {
+                it.copy(isBetaManagerUpdateCheckFailed = false)
             }
             return
         }
