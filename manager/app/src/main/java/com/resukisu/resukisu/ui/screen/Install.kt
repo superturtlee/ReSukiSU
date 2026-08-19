@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.twotone.AutoFixHigh
 import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material.icons.twotone.FileUpload
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -53,6 +54,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
@@ -954,6 +956,7 @@ private fun KpmPatchOptionGroup(
     selectedOption: KpmPatchOption,
     onOptionChanged: (KpmPatchOption) -> Unit
 ) {
+    val cardConfig: CardConfig = koinInject()
     val options = listOf(
         KpmPatchOption.FOLLOW_KERNEL to stringResource(R.string.kpm_follow_kernel_file),
         KpmPatchOption.PATCH_KPM to stringResource(R.string.enable_kpm_patch),
@@ -971,9 +974,9 @@ private fun KpmPatchOptionGroup(
             val interactionSource = remember { MutableInteractionSource() }
             Surface(
                 color = if (option == selectedOption)
-                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = cardAlpha)
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = cardConfig.cardAlpha)
                 else
-                    MaterialTheme.colorScheme.surfaceContainer.copy(alpha = cardAlpha),
+                    MaterialTheme.colorScheme.surfaceContainer.copy(alpha = cardConfig.cardAlpha),
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()

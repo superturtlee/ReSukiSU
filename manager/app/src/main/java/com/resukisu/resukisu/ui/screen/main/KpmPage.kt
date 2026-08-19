@@ -69,8 +69,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import com.resukisu.resukisu.R
+import com.resukisu.resukisu.data.shell.KsuCliRepository
 import com.resukisu.resukisu.ui.component.AnimatedFab
 import com.resukisu.resukisu.ui.component.ConfirmDialogHandle
 import com.resukisu.resukisu.ui.component.ConfirmResult
@@ -83,9 +85,6 @@ import com.resukisu.resukisu.ui.theme.blurSource
 import com.resukisu.resukisu.ui.theme.getCardColors
 import com.resukisu.resukisu.ui.theme.getCardElevation
 import com.resukisu.resukisu.ui.util.LocalSnackbarHost
-import com.resukisu.resukisu.ui.util.getRootShell
-import com.resukisu.resukisu.ui.util.loadKpmModule
-import com.resukisu.resukisu.ui.util.unloadKpmModule
 import com.resukisu.resukisu.ui.viewmodel.KpmViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -100,6 +99,7 @@ import java.net.URLEncoder
 @Composable
 fun KpmPage(bottomPadding: Dp) {
     val viewModel: KpmViewModel = koinViewModel<KpmViewModel>()
+    val ksuCliRepository: KsuCliRepository = koinInject()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackBarHost = LocalSnackbarHost.current
@@ -136,7 +136,7 @@ fun KpmPage(bottomPadding: Dp) {
         LaunchedEffect(tempFileForInstall) {
             tempFileForInstall?.let { tempFile ->
                 try {
-                    val shell = getRootShell()
+                    val shell = ksuCliRepository.getRootShell()
                     val command = "strings ${tempFile.absolutePath} | grep 'name='"
                     val result = shell.newJob().add(command).to(ArrayList(), null).exec()
                     if (result.isSuccess) {
@@ -186,6 +186,7 @@ fun KpmPage(bottomPadding: Dp) {
                                             tempFile = tempFile,
                                             isEmbed = false,
                                             viewModel = viewModel,
+                                            ksuCliRepository = ksuCliRepository,
                                             snackBarHost = snackBarHost,
                                             kpmInstallSuccess = kpmInstallSuccess,
                                             kpmInstallFailed = kpmInstallFailed
@@ -215,6 +216,7 @@ fun KpmPage(bottomPadding: Dp) {
                                             tempFile = tempFile,
                                             isEmbed = true,
                                             viewModel = viewModel,
+                                            ksuCliRepository = ksuCliRepository,
                                             snackBarHost = snackBarHost,
                                             kpmInstallSuccess = kpmInstallSuccess,
                                             kpmInstallFailed = kpmInstallFailed
@@ -284,7 +286,7 @@ fun KpmPage(bottomPadding: Dp) {
             if (!isCorrectMimeType) {
                 var shouldShowSnackbar = true
                 try {
-                    val matchCount = checkStringsCommand(tempFile)
+                    val matchCount = checkStringsCommand(ksuCliRepository, tempFile)
                     val isElf = isElfFile(tempFile)
 
                     if (matchCount >= 1 || isElf) {
@@ -462,6 +464,7 @@ fun KpmPage(bottomPadding: Dp) {
                                     handleModuleUninstall(
                                         module = module,
                                         viewModel = viewModel,
+                                        ksuCliRepository = ksuCliRepository,
                                         snackBarHost = snackBarHost,
                                         kpmUninstallSuccess = kpmUninstallSuccess,
                                         kpmUninstallFailed = kpmUninstallFailed,
@@ -493,13 +496,14 @@ private suspend fun handleModuleInstall(
     tempFile: File,
     isEmbed: Boolean,
     viewModel: KpmViewModel,
+    ksuCliRepository: KsuCliRepository,
     snackBarHost: SnackbarHostState,
     kpmInstallSuccess: String,
     kpmInstallFailed: String
 ) {
     var moduleId: String? = null
     try {
-        val shell = getRootShell()
+        val shell = ksuCliRepository.getRootShell()
         val command = "strings ${tempFile.absolutePath} | grep 'name='"
         val result = shell.newJob().add(command).to(ArrayList(), null).exec()
         if (result.isSuccess) {
@@ -528,12 +532,12 @@ private suspend fun handleModuleInstall(
 
     try {
         if (isEmbed) {
-            val shell = getRootShell()
+            val shell = ksuCliRepository.getRootShell()
             shell.newJob().add("mkdir -p /data/adb/kpm").exec()
             shell.newJob().add("cp ${tempFile.absolutePath} $targetPath").exec()
         }
 
-        val loadResult = loadKpmModule(tempFile.absolutePath)
+        val loadResult = ksuCliRepository.loadKpmModule(tempFile.absolutePath)
         if (loadResult.startsWith("Error")) {
             Log.e("KsuCli", "Failed to load KPM module: $loadResult")
             snackBarHost.showSnackbar(
@@ -560,6 +564,7 @@ private suspend fun handleModuleInstall(
 private suspend fun handleModuleUninstall(
     module: KpmViewModel.ModuleInfo,
     viewModel: KpmViewModel,
+    ksuCliRepository: KsuCliRepository,
     snackBarHost: SnackbarHostState,
     kpmUninstallSuccess: String,
     kpmUninstallFailed: String,
@@ -574,7 +579,7 @@ private suspend fun handleModuleUninstall(
     val moduleFilePath = "/data/adb/kpm/$moduleFileName"
 
     val fileExists = try {
-        val shell = getRootShell()
+        val shell = ksuCliRepository.getRootShell()
         val result = shell.newJob().add("ls /data/adb/kpm/$moduleFileName").exec()
         result.isSuccess
     } catch (e: Exception) {
@@ -595,7 +600,7 @@ private suspend fun handleModuleUninstall(
 
     if (confirmResult == ConfirmResult.Confirmed) {
         try {
-            val unloadResult = unloadKpmModule(module.id)
+            val unloadResult = ksuCliRepository.unloadKpmModule(module.id)
             if (unloadResult.startsWith("Error")) {
                 Log.e("KsuCli", "Failed to unload KPM module: $unloadResult")
                 snackBarHost.showSnackbar(
@@ -606,7 +611,7 @@ private suspend fun handleModuleUninstall(
             }
 
             if (fileExists) {
-                val shell = getRootShell()
+                val shell = ksuCliRepository.getRootShell()
                 shell.newJob().add("rm $moduleFilePath").exec()
             }
 
@@ -631,7 +636,7 @@ private fun KpmModuleItem(
     onUninstall: () -> Unit,
     onControl: () -> Unit
 ) {
-    val viewModel: KpmViewModel = viewModel()
+    val viewModel: KpmViewModel = koinViewModel<KpmViewModel>()
     val scope = rememberCoroutineScope()
     val snackBarHost = remember { SnackbarHostState() }
     val successMessage = stringResource(R.string.kpm_control_success)
@@ -777,8 +782,8 @@ private fun KpmModuleItem(
     }
 }
 
-private fun checkStringsCommand(tempFile: File): Int {
-    val shell = getRootShell()
+private fun checkStringsCommand(ksuCliRepository: KsuCliRepository, tempFile: File): Int {
+    val shell = ksuCliRepository.getRootShell()
     val command = "strings ${tempFile.absolutePath} | grep -E 'name=|version=|license=|author='"
     val result = shell.newJob().add(command).to(ArrayList(), null).exec()
 
