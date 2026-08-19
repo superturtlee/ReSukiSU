@@ -69,7 +69,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.compose.viewmodel.koinViewModel
 import com.resukisu.resukisu.R
 import com.resukisu.resukisu.ui.component.AnimatedFab
 import com.resukisu.resukisu.ui.component.ConfirmDialogHandle
@@ -99,7 +99,7 @@ import java.net.URLEncoder
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KpmPage(bottomPadding: Dp) {
-    val viewModel: KpmViewModel = viewModel<KpmViewModel>()
+    val viewModel: KpmViewModel = koinViewModel<KpmViewModel>()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackBarHost = LocalSnackbarHost.current

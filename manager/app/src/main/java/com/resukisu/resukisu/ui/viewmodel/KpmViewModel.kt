@@ -6,11 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.resukisu.resukisu.ui.util.controlKpmModule
-import com.resukisu.resukisu.ui.util.getKpmModuleCount
-import com.resukisu.resukisu.ui.util.getKpmModuleInfo
-import com.resukisu.resukisu.ui.util.getKpmVersion
-import com.resukisu.resukisu.ui.util.listKpmModules
+import com.resukisu.resukisu.data.shell.KsuCliRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,7 +15,9 @@ import kotlinx.coroutines.withContext
  * @author ShirkNeko
  * @date 2025/5/31.
  */
-class KpmViewModel : ViewModel() {
+class KpmViewModel(
+    private val ksuCliRepository: KsuCliRepository,
+) : ViewModel() {
     var moduleList by mutableStateOf(emptyList<ModuleInfo>())
         private set
 
@@ -36,13 +34,13 @@ class KpmViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             isRefreshing = true
             try {
-                val moduleCount = getKpmModuleCount()
+                val moduleCount = ksuCliRepository.getKpmModuleCount()
                 Log.d("KsuCli", "Module count: $moduleCount")
 
                 moduleList = getAllKpmModuleInfo()
 
                 // 获取 KPM 版本信息
-                val kpmVersion = getKpmVersion()
+                val kpmVersion = ksuCliRepository.getKpmVersion()
                 Log.d("KsuCli", "KPM Version: $kpmVersion")
             } catch (e: Exception) {
                 Log.e("KsuCli", "获取模块列表失败", e)
@@ -55,7 +53,7 @@ class KpmViewModel : ViewModel() {
     private fun getAllKpmModuleInfo(): List<ModuleInfo> {
         val result = mutableListOf<ModuleInfo>()
         try {
-            val str = listKpmModules()
+            val str = ksuCliRepository.listKpmModules()
             val moduleNames = str
                 .split("\n")
                 .filter { it.isNotBlank() }
@@ -75,7 +73,7 @@ class KpmViewModel : ViewModel() {
     }
 
     private fun parseModuleInfo(name: String): ModuleInfo? {
-        val info = getKpmModuleInfo(name)
+        val info = ksuCliRepository.getKpmModuleInfo(name)
         if (info.isBlank()) return null
 
         val properties = info.lineSequence()
@@ -110,7 +108,7 @@ class KpmViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 currentModuleDetail = withContext(Dispatchers.IO) {
-                    getKpmModuleInfo(moduleId)
+                    ksuCliRepository.getKpmModuleInfo(moduleId)
                 }
                 Log.d("KsuCli", "Module detail loaded: $currentModuleDetail")
             } catch (e: Exception) {
@@ -146,7 +144,7 @@ class KpmViewModel : ViewModel() {
 
     fun executeControl(): Int {
         val moduleId = selectedModuleId ?: return -1
-        val result = controlKpmModule(moduleId, inputArgs)
+        val result = ksuCliRepository.controlKpmModule(moduleId, inputArgs)
         hideInputDialog()
         return result
     }

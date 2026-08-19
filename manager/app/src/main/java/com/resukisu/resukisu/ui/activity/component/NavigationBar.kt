@@ -30,8 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.resukisu.resukisu.ksuApp
 import com.resukisu.resukisu.ui.screen.BottomBarDestination
 import com.resukisu.resukisu.ui.theme.CardConfig
 import com.resukisu.resukisu.ui.theme.ThemeConfig
@@ -39,19 +37,23 @@ import com.resukisu.resukisu.ui.theme.blurEffect
 import com.resukisu.resukisu.ui.util.LocalHandlePageChange
 import com.resukisu.resukisu.ui.util.LocalSelectedPage
 import com.resukisu.resukisu.ui.viewmodel.HomeViewModel
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 // TODO Add FloatingBottomBar as an choice to user
+
 @SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun NavigationBar(
+    modifier: Modifier = Modifier,
     destinations: List<BottomBarDestination>,
     isBottomBar: Boolean
 ) {
-    // 是否隐藏 badge
-    val homeViewModel = viewModel<HomeViewModel>(viewModelStoreOwner = ksuApp)
+    val themeConfig: ThemeConfig = koinInject()
+    val cardConfig: CardConfig = koinInject()
+    val homeViewModel = koinViewModel<HomeViewModel>()
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val isHideOtherInfo = uiState.isHideOtherInfo
     val superuserCount = uiState.systemInfo.superuserCount
     val moduleCount = uiState.systemInfo.moduleCount
     val kpmModuleCount = uiState.systemInfo.kpmModuleCount
@@ -62,16 +64,20 @@ fun NavigationBar(
 
     if (isBottomBar) {
         FlexibleBottomAppBar(
-            modifier = Modifier
+            modifier = modifier
                 .windowInsetsPadding(
                     WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
                 )
-                .blurEffect(),
+                .blurEffect(
+                    compensateHorizontalOverscroll = true,
+                    compensateVerticalOverscroll = true,
+                    useFixedSurfaceBoundsForOverscroll = true,
+                ),
             containerColor =
-                if (ThemeConfig.isEnableBlur)
+                if (themeConfig.isEnableBlur)
                     Color.Transparent
                 else
-                    MaterialTheme.colorScheme.surfaceContainer.copy(CardConfig.cardAlpha),
+                    MaterialTheme.colorScheme.surfaceContainer.copy(cardConfig.cardAlpha),
             contentColor = MaterialTheme.colorScheme.onSurface
         ) {
             destinations.forEachIndexed { index, destination ->
@@ -84,23 +90,26 @@ fun NavigationBar(
                     kpmModuleCount = kpmModuleCount,
                     superuserCount = superuserCount,
                     moduleCount = moduleCount,
-                    isHideOtherInfo = isHideOtherInfo,
                 )
             }
         }
     } else {
         WideNavigationRail(
-            modifier = Modifier
+            modifier = modifier
                 .windowInsetsPadding(
                     WindowInsets.navigationBars.only(WindowInsetsSides.Horizontal)
                 )
-                .blurEffect(),
+                .blurEffect(
+                    compensateHorizontalOverscroll = true,
+                    compensateVerticalOverscroll = false,
+                    useFixedSurfaceBoundsForOverscroll = true,
+                ),
             colors = WideNavigationRailColors(
                 containerColor =
-                    if (ThemeConfig.isEnableBlur)
+                    if (themeConfig.isEnableBlur)
                         Color.Transparent
                     else
-                        MaterialTheme.colorScheme.surfaceContainer.copy(CardConfig.cardAlpha),
+                        MaterialTheme.colorScheme.surfaceContainer.copy(cardConfig.cardAlpha),
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 modalContainerColor = WideNavigationRailDefaults.colors().modalContainerColor,
                 modalScrimColor = WideNavigationRailDefaults.colors().modalScrimColor,
@@ -117,7 +126,6 @@ fun NavigationBar(
                     kpmModuleCount = kpmModuleCount,
                     superuserCount = superuserCount,
                     moduleCount = moduleCount,
-                    isHideOtherInfo = isHideOtherInfo,
                 )
             }
         }
@@ -132,7 +140,6 @@ private fun NavigationRailItem(
     kpmModuleCount: Int,
     superuserCount: Int,
     moduleCount: Int,
-    isHideOtherInfo: Boolean
 ) {
     WideNavigationRailItem(
         railExpanded = false,
@@ -146,7 +153,6 @@ private fun NavigationRailItem(
                         superUser = superuserCount,
                         module = moduleCount,
                         kpm = kpmModuleCount,
-                        isHideOtherInfo = isHideOtherInfo,
                     )
                 }
             ) {
@@ -177,7 +183,6 @@ private fun RowScope.BottomBarNavigationItem(
     kpmModuleCount: Int,
     superuserCount: Int,
     moduleCount: Int,
-    isHideOtherInfo: Boolean
 ) {
     NavigationBarItem(
         selected = isSelected,
@@ -190,7 +195,6 @@ private fun RowScope.BottomBarNavigationItem(
                         superUser = superuserCount,
                         module = moduleCount,
                         kpm = kpmModuleCount,
-                        isHideOtherInfo = isHideOtherInfo,
                     )
                 }
             ) {
@@ -220,7 +224,6 @@ private fun DestinationBadge(
     superUser: Int,
     module: Int,
     kpm: Int,
-    isHideOtherInfo: Boolean,
 ) {
     val count = when (dest) {
         BottomBarDestination.Kpm -> kpm
@@ -230,7 +233,7 @@ private fun DestinationBadge(
     }
 
     AnimatedVisibility(
-        visible = count > 0 && !isHideOtherInfo,
+        visible = count > 0,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
