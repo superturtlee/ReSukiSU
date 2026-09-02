@@ -44,20 +44,13 @@ class FlashRepository(
     private var worker: HorizonKernelWorker? = null
     private val installEnvironmentMutex = Mutex()
 
-    fun startKernelFlash(
-        uri: String,
-        selectedSlot: String?,
-        kpmPatchEnabled: Boolean = false,
-        kpmUndoPatch: Boolean = false,
-    ) {
+    fun startKernelFlash(uri: String, selectedSlot: String?) {
         val current = mutableSession.value
         if (current.requestUri == uri && current.selectedSlot == selectedSlot && worker != null) return
         workerState.reset()
         mutableSession.value = KernelFlashSession(
             requestUri = uri,
             selectedSlot = selectedSlot,
-            kpmPatchEnabled = kpmPatchEnabled,
-            kpmUndoPatch = kpmUndoPatch,
             progress = FlashProgress(),
         )
         observationJob?.cancel()
@@ -73,8 +66,6 @@ class FlashRepository(
             state = workerState,
             ksuCliRepository = ksuCliRepository,
             slot = selectedSlot,
-            kpmPatchEnabled = kpmPatchEnabled,
-            kpmUndoPatch = kpmUndoPatch,
         ).also {
             it.uri = uri.toUri()
             it.start()

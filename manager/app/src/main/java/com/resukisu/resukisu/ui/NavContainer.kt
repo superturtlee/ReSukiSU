@@ -496,9 +496,7 @@ fun NavContainer(
                     entry<Route.KernelFlash> { key ->
                         KernelFlashScreen(
                             key.kernelUri,
-                            key.selectedSlot,
-                            key.kpmPatchEnabled,
-                            key.kpmUndoPatch
+                            key.selectedSlot
                         )
                     }
                 },

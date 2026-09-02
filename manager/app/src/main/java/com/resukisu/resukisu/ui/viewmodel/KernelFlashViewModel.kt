@@ -27,12 +27,7 @@ data class KernelFlashUiState(
 )
 
 sealed interface KernelFlashUiAction {
-    data class Start(
-        val uri: String,
-        val selectedSlot: String?,
-        val kpmPatchEnabled: Boolean = false,
-        val kpmUndoPatch: Boolean = false,
-    ) : KernelFlashUiAction
+    data class Start(val uri: String, val selectedSlot: String?) : KernelFlashUiAction
     data object ConsumeAutoExit : KernelFlashUiAction
     data object Reboot : KernelFlashUiAction
 }
@@ -67,12 +62,7 @@ class KernelFlashViewModel(
 
     fun dispatch(action: KernelFlashUiAction) {
         when (action) {
-            is KernelFlashUiAction.Start -> startKernelFlash(
-                action.uri,
-                action.selectedSlot,
-                action.kpmPatchEnabled,
-                action.kpmUndoPatch,
-            )
+            is KernelFlashUiAction.Start -> startKernelFlash(action.uri, action.selectedSlot)
             KernelFlashUiAction.ConsumeAutoExit -> {
                 removePreference(AUTO_EXIT_KEY)
                 autoExit.value = false

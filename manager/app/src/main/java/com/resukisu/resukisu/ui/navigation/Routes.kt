@@ -139,8 +139,6 @@ sealed interface Route : NavKey, Parcelable {
     @Serializable
     data class KernelFlash(
         val kernelUri: String,
-        val selectedSlot: String?,
-        val kpmPatchEnabled: Boolean = false,
-        val kpmUndoPatch: Boolean = false
+        val selectedSlot: String?
     ) : Route
 }
