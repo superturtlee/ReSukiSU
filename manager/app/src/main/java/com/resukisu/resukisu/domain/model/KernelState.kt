@@ -40,6 +40,7 @@ data class KernelStatus(
 data class KernelFeatureSettings(
     val suEnabled: Boolean,
     val kernelUmountEnabled: Boolean,
+    val webViewZygoteUmountEnabled: Boolean,
     val suLogEnabled: Boolean,
     val selinuxHideEnabled: Boolean,
     val defaultUmountModules: Boolean,
